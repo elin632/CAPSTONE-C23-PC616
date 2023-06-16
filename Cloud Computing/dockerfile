@@ -1,20 +1,18 @@
 # Menggunakan image Node.js sebagai base image
-FROM node:14
+FROM node:14.21.2-alpine
 
 # Menetapkan direktori kerja di dalam container
-WORKDIR /app/mapsAPI
+WORKDIR /app
 
 # Menyalin package.json dan package-lock.json ke direktori kerja
 COPY package*.json ./
 
 # Menginstal dependensi yang diperlukan
-RUN npm install --production
+RUN npm install
 
 # Menyalin seluruh kode aplikasi ke direktori kerja
 COPY . .
 
-# Menjalankan perintah build untuk aplikasi
-RUN npm run build
-
+EXPOSE 5000
 # Menetapkan command yang akan dijalankan saat container dijalankan
 CMD ["npm", "start"]
