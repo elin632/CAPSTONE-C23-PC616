@@ -1,48 +1,15 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
-const fs = require('fs');
-
+const axios = require('axios');
 
 const { google } = require('googleapis');
 const { auth } = require('google-auth-library');
 const { Client } = require('@googlemaps/google-maps-services-js');
 
-const client = auth.fromAPIKey('AIzaSyBFVqoYS94ZB5T5F52_MXKyDdl3OZ-YrKg');
+const client = auth.fromAPIKey(process.env.GOOGLE_MAPS_API_KEY);
 const googleMapsClient = new Client({});
-
-// Endpoint to fetch data from JSON file and generate heatmap response
-app.get('/heatmap', (req, res) => {
-  // read JSON file
-  fs.readFile('heatmapData.json', 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Failed to read data file' });
-    }
-
-    try {
-      const jsonData = JSON.parse(data);
-      const heatmapData = processData(jsonData); // Process data
-
-      // Generates a JSON response containing the heatmap data
-      res.json({ heatmap: heatmapData });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: 'Failed to process data' });
-    }
-  });
-});
-
-// function to process data 
-function processData(data) {
-  // Process data and prepare heatmap data
-  const heatmapData = data.map(entry => ({
-    lat: parseFloat(entry.lat),
-    lng: parseFloat(entry.lng),
-    weight: parseInt(entry.weight)
-  }));
-
-  return heatmapData;
-}
 
 // Using Google Maps JavaScript API to create heatmaps
 function createHeatmap(heatmapData) {
@@ -60,7 +27,26 @@ function createHeatmap(heatmapData) {
   heatmap.setMap(map);
 }
 
+// Endpoint to fetch data from JSON file and generate heatmap response
+app.get('/heatmap', async (req, res) => {
+  try {
+    const response = await axios.get('https://storage.googleapis.com/disaster-shield/heatmapData.json');
+    const data = response.data;
+
+    const heatmapResponse = await axios.post('https://model-fastapi-frlemfld5q-et.a.run.app/predict', { data }); // Send data to endpoint /heatmap using POST method
+
+    const heatmapData = heatmapResponse.data.heatmap;
+    // Generate a JSON response containing the heatmap data
+    res.json({ heatmap: heatmapData });
+    createHeatmap(heatmapData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch model data' });
+  }
+});
+
 // start server
-app.listen(8080, () => {
-  console.log('Server running on port 8080');
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
