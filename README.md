@@ -10,3 +10,9 @@
 - Ahmad Hafizh Assa'ad (C038DSX2701) - Cloud Computing - Institut Teknologi Sepuluh Nopember
 - Mochamad Rafi Ramadhan (C301DSX4923) - Cloud Computing  - Universitas Pasundan
 - Bayu Surya Dharma Sanjaya (A360DKX4360) - Mobile Development - Universitas Telkom
+
+## What is DisasterShield??
+
+### Background Problem 
+Increasingly hot temperatures and erratic weather are of concern to the public because they can affect their health and well-being. In emergency situations, such as natural disasters, accurate temperature and weather monitoring can help people take appropriate measures to avoid possible harm. However, the lack of accurate and easily accessible information about temperature and weather in certain areas can make it difficult for people to take preventive measures.
+
