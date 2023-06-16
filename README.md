@@ -1,4 +1,4 @@
-# CAPSTONE-C23-PC616
+# Disaster shield
 
 Member of team Capstone-C23-PC616 (Disaster Shield Project)
 
